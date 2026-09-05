@@ -93,7 +93,8 @@ La contra es real y conviene saberla:
 - Si borras los datos de navegación, **se va**.
 - En modo incógnito no se guarda nada.
 
-Por eso están los botones de **descargar**. Bajan un archivo `.md` que puedes
+Por eso están los botones de **descargar**. Bajan un archivo `.rtf` —se abre
+directo en Google Docs, Word y Pages, con el título en negrita— que puedes
 guardar en la carpeta de Google Drive de tu Mac
 (`~/Library/CloudStorage/GoogleDrive-…`) y queda sincronizado solo.
 
@@ -127,6 +128,8 @@ Por si dentro de seis meses no me acuerdo por qué está así:
 ## Limitaciones conocidas
 
 - El archivo no tiene buscador ni permite borrar entradas todavía.
+- El RTF se escribe a mano en `estudio.js`, sin librerías. Guarda negrita,
+  cursiva y párrafos; no guarda imágenes ni tablas, que la pieza no usa.
 - La duración está fija en veinte minutos. Se cambia en `estudio.js`, arriba de
   todo: `const MINUTOS = 20`. Al lado están `SUENOS_POR_NOCHE` y `ESTRELLAS`.
 - Abierto con doble clic desde el escritorio (`file://`), algunos navegadores no

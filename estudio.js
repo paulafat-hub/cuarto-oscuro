@@ -261,30 +261,78 @@ function dibujarArchivo() {
 
 
 /* ------------------------------------------------------------
-   9 · SACARLO DE ACÁ
-   Descargar en Markdown y copiar al portapapeles. Es lo que evita
-   que tus cuentos queden presos en el navegador.
+   9 · SACARLO DE AQUÍ
+   Descargar y copiar al portapapeles. Es lo que evita que tus
+   cuentos queden presos en el navegador.
+
+   El formato es RTF: texto plano con marcas, igual que Markdown,
+   pero Google Docs, Word y Pages lo abren con el formato ya puesto
+   (el título en negrita, la fecha en cursiva). No hace falta ninguna
+   librería: el archivo se escribe a mano, aquí abajo.
    ------------------------------------------------------------ */
 
-function comoTexto(s) {
-  return "# " + s.consigna + "\n\n" +
-         "*" + s.tecnica + (s.restriccion ? " · " + s.restriccion : "") + "*  \n" +
-         "*" + fechaLegible(s.fecha) + " · " + s.minutos + " minutos*\n\n" +
-         "---\n\n" + s.texto + "\n";
+/* RTF reserva tres caracteres para sí mismo — \ { } — y no entiende
+   acentos ni eñes directamente: hay que mandarlos por su número. */
+function escaparRTF(texto) {
+  return texto
+    .replace(/[\\{}]/g, "\\$&")
+    .replace(/\r\n?/g, "\n")
+    .split("")
+    .map((letra) => {
+      const numero = letra.charCodeAt(0);
+      return numero > 127 ? "\\u" + numero + "?" : letra;
+    })
+    .join("")
+    .replace(/\n/g, "\\par\n");     // cada salto de línea, un párrafo
 }
 
-/* Un nombre de archivo decente: 2026-08-22-binomio-fantastico.md */
+/* Una sesión, lista para pegar dentro del documento. */
+function sesionRTF(s) {
+  const ficha = s.tecnica +
+                (s.restriccion ? " · " + s.restriccion : "") + "\n" +
+                fechaLegible(s.fecha) + " · " + s.minutos +
+                (s.minutos === 1 ? " minuto" : " minutos");
+
+  return "{\\b\\fs30 " + escaparRTF(s.consigna) + "}\\par\n" +
+         "{\\i\\fs18\\cf1 " + escaparRTF(ficha) + "}\\par\\par\n" +
+         escaparRTF(s.texto) + "\\par\n";
+}
+
+/* El documento entero: el encabezado que declara tipografía y colores,
+   una o más sesiones, y la llave que lo cierra. */
+function documentoRTF(sesiones) {
+  const encabezado =
+    "{\\rtf1\\ansi\\deff0\n" +
+    "{\\fonttbl{\\f0\\froman Georgia;}}\n" +
+    "{\\colortbl;\\red120\\green116\\blue106;}\n" +   // gris para la ficha
+    "\\f0\\fs24\\sa180\n";
+
+  const separador = "\\par\\par{\\qc ***}\\par\\par\n";
+
+  return encabezado + sesiones.map(sesionRTF).join(separador) + "}";
+}
+
+/* Un nombre de archivo decente: 2026-09-05-el-espejo-llego-primero.rtf
+
+   Usa TUS primeras palabras, no el nombre de la técnica. Antes decía
+   "ensalada-de-cuentos" y parecía un título cuando no lo era. */
 function nombreDeArchivo(s) {
   const dia = s.fecha.slice(0, 10);
-  const apodo = s.tecnica
+
+  const arranque = s.texto.trim().split(/\s+/).slice(0, 6).join(" ");
+  const apodo = arranque
     .normalize("NFD").replace(/[\u0300-\u036f]/g, "")   // saca los acentos
-    .toLowerCase().replace(/[^a-z0-9]+/g, "-");
-  return dia + "-" + apodo + ".md";
+    .toLowerCase()
+    .replace(/[^a-z0-9]+/g, "-")
+    .replace(/^-+|-+$/g, "")
+    .slice(0, 55);
+
+  return dia + "-" + (apodo || "sin-titulo") + ".rtf";
 }
 
 function descargar(nombre, contenido) {
   const enlace = document.createElement("a");
-  enlace.href = URL.createObjectURL(new Blob([contenido], { type: "text/markdown" }));
+  enlace.href = URL.createObjectURL(new Blob([contenido], { type: "application/rtf" }));
   enlace.download = nombre;
   enlace.click();
   URL.revokeObjectURL(enlace.href);
@@ -309,7 +357,7 @@ actualizarUmbral();
 
 $("boton-descargar").addEventListener("click", () => {
   const ultima = leerSesiones()[0];
-  if (ultima) descargar(nombreDeArchivo(ultima), comoTexto(ultima));
+  if (ultima) descargar(nombreDeArchivo(ultima), documentoRTF([ultima]));
 });
 
 $("boton-copiar").addEventListener("click", async (evento) => {
@@ -324,7 +372,7 @@ $("boton-copiar").addEventListener("click", async (evento) => {
 $("boton-descargar-todo").addEventListener("click", () => {
   const todas = leerSesiones();
   if (!todas.length) return;
-  descargar("cuarto-oscuro-completo.md", todas.map(comoTexto).join("\n\n\n"));
+  descargar("cuarto-oscuro-completo.rtf", documentoRTF(todas));
 });
 
 $("boton-ver-archivo").addEventListener("click", () => {
