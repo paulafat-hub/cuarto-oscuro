@@ -1,0 +1,116 @@
+<!doctype html>
+<html lang="es">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <title>El cuarto a oscuras</title>
+  <meta name="description" content="Un cuarto donde llega una consigna que no elegiste y tienes veinte minutos para escribirla.">
+
+  <!-- Las tipografías vienen de Google Fonts.
+       Cormorant Garamond para lo que importa, Space Grotesk para lo funcional. -->
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=Cormorant+Garamond:wght@300;400&family=Space+Grotesk:wght@400&display=swap" rel="stylesheet">
+
+  <link rel="stylesheet" href="estilos.css">
+</head>
+<body>
+
+  <!-- El cielo. Las estrellas las dibuja estudio.js al cargar la página,
+       así que este contenedor arranca vacío. -->
+  <div class="cielo" id="cielo"></div>
+
+  <!-- La línea del tiempo. Vive fija arriba de todo y solo aparece
+       mientras estás escribiendo. -->
+  <div class="tiempo oculto" id="tiempo">
+    <div class="tiempo-resto" id="tiempo-resto"></div>
+  </div>
+
+
+  <!-- ============================================================
+       PANTALLA 1 · EL UMBRAL
+       Lo primero que ves. Casi nada: un nombre y una puerta.
+       ============================================================ -->
+  <main class="cuarto" id="umbral">
+    <div class="umbral">
+      <h1 class="emerge">El cuarto<br>a oscuras</h1>
+      <p class="emerge demora-1">
+        Aquí llega una consigna que no elegiste.<br>
+        Después tienes veinte minutos.
+      </p>
+      <div class="acciones acciones-centradas">
+        <button class="boton boton-puerta emerge demora-2" id="boton-dormir">abre un sueño</button>
+        <button class="boton emerge demora-2 oculto" id="boton-ver-archivo"></button>
+      </div>
+    </div>
+  </main>
+
+
+  <!-- ============================================================
+       PANTALLA 2 · LA CONSIGNA
+       Emerge de la oscuridad. No hay forma de pedir otra.
+       ============================================================ -->
+  <main class="cuarto oculto" id="pantalla-consigna">
+    <p class="etiqueta emerge" id="etiqueta-tecnica"></p>
+    <p class="consigna emerge demora-1" id="texto-consigna"></p>
+    <p class="restriccion emerge demora-2 oculto" id="texto-restriccion"></p>
+    <div class="acciones emerge demora-3">
+      <button class="boton" id="boton-escribir">escribir veinte minutos</button>
+      <button class="boton" id="boton-otro-sueno"></button>
+    </div>
+  </main>
+
+
+  <!-- ============================================================
+       PANTALLA 3 · LA HOJA
+       Se enciende el velador. El único lugar claro de la pieza.
+       ============================================================ -->
+  <div class="hoja oculto" id="pantalla-hoja">
+    <div class="hoja-encabezado">
+      <p class="etiqueta" id="hoja-tecnica"></p>
+      <p class="consigna" id="hoja-consigna"></p>
+      <p class="restriccion oculto" id="hoja-restriccion"></p>
+    </div>
+
+    <textarea class="escritura" id="escritura"
+              placeholder="Escribe aquí. No corrijas todavía."></textarea>
+
+    <div class="acciones">
+      <span class="reloj" id="reloj">20:00</span>
+      <button class="boton" id="boton-cerrar">cerrar la hoja</button>
+    </div>
+  </div>
+
+
+  <!-- ============================================================
+       PANTALLA 4 · EL CIERRE Y EL ARCHIVO
+       Lo que acabás de escribir, y todo lo anterior debajo.
+       ============================================================ -->
+  <main class="cuarto oculto" id="pantalla-cierre">
+    <h2 class="consigna emerge" id="cierre-titulo"></h2>
+    <p class="etiqueta emerge demora-1" id="cierre-resumen"></p>
+
+    <div class="acciones emerge demora-1" id="acciones-cierre">
+      <button class="boton" id="boton-descargar">descargar</button>
+      <button class="boton" id="boton-copiar">copiar</button>
+    </div>
+
+    <div class="acciones emerge demora-2">
+      <button class="boton" id="boton-otra-noche">volver al cuarto</button>
+    </div>
+
+    <section class="archivo oculto" id="archivo">
+      <p class="etiqueta" id="cuenta-archivo"></p>
+      <div id="lista-archivo"></div>
+      <div class="acciones">
+        <button class="boton" id="boton-descargar-todo">descargar todo</button>
+      </div>
+    </section>
+  </main>
+
+
+  <!-- Primero las palabras, después la maquinaria que las usa. -->
+  <script src="consignas.js"></script>
+  <script src="estudio.js"></script>
+</body>
+</html>
